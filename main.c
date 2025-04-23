@@ -2,8 +2,8 @@
 #include <time.h>
 #include <string.h>
 
-int num_expens = 0;
-int errors = 0; // Counter for errors made
+#define SUCCESS 1
+#define ERROR 0
 
 struct travelMenu
 {
@@ -11,7 +11,7 @@ struct travelMenu
   char date[11];         // YYYY-MM-DD
   float expenses;        // How much are you spending
   char description[100]; // On what are you spending
-  char category[50];     // Categorize expensess
+  char category[50];     // Categorize expenses
 };
 
 void display_menu()
@@ -22,13 +22,17 @@ void display_menu()
   printf("\n3: Exit\n");
 }
 
-void guardarEnCSV(struct travelMenu track, const char *filename)
+/*
+This function takes in two parameters, a struct travelMenu and a filename.
+What this function does is that it will append the structure into the file
+*/
+void saveInCSV(struct travelMenu track, const char *filename)
 {
-  FILE *archivo = fopen(filename, "a"); // Modo 'a' para agregar sin borrar
+  FILE *archivo = fopen(filename, "a"); // Mode 'a' to add without deleting existing content
   if (archivo == NULL)
   {
-    printf("Error al abrir el archivo.\n");
-    return;
+    printf("An error was produced while trying to open the file.\n");
+    return ERROR;
   }
 
   fprintf(archivo, "%s,%s,%.2f,%s,%s\n",
@@ -41,42 +45,54 @@ void guardarEnCSV(struct travelMenu track, const char *filename)
   fclose(archivo);
 }
 
+/*
+This function will handle the amount of wrong inputs done by the user
+*/
 int add_error()
 {
+  static int errors = 0; // The function will remember the value every time it is called
+
+  printf("Invalid input. You have %d tries left.\n", 2 - errors);
   errors++;
-  printf("You clicked something incorrect");
+  if (errors == 3)
+  {
+    printf("You have made 3 errors, exiting the program...\n");
+    return SUCCESS; // Success to satisfy exiting condition in main
+  }
+  return ERROR;
 }
 
 int btn_0()
 {
-  struct travelMenu track[100];
+  struct travelMenu track;
   printf("\nYou are Adding a New Expense\n");
   printf("Add your destination:\n");
-  scanf(" %[^\n]", track[num_expens].destination);
+  scanf(" %[^\n]", track.destination);
   printf("Add the date (YYYY-MM-DD)\n");
-  scanf(" %[^\n]", track[num_expens].date);
+  scanf(" %[^\n]", track.date);
   printf("Add expense:\n");
-  scanf("%f", &track[num_expens].expenses);
+  scanf("%f", &track.expenses);
   getchar(); // Clear the buffer
   printf("Add a small description:\n");
-  scanf(" %[^\n]", track[num_expens].description);
+  scanf(" %[^\n]", track.description);
   printf("Add the category of your expense:\n");
-  scanf(" %[^\n]", track[num_expens].category);
+  scanf(" %[^\n]", track.category);
 
-  guardarEnCSV(track[num_expens], "travel_database.csv");
-  num_expens++;
-  return 1;
+  saveInCSV(track, "travel_database.csv");
+  return SUCCESS;
 }
 
 int btn_1()
 {
-  FILE *archivo = fopen("travel_database.csv", "r");
+  char file_name[] = "travel_database.csv";
+  FILE *archivo = fopen(file_name, "r"); // just read content, no editing
   if (archivo == NULL)
   {
-    printf("Error al abrir el archivo.\n");
+    printf("An error was produced while trying to open the file.\n");
+    return ERROR;
   }
 
-  struct travelMenu track[100];
+  struct travelMenu track[countLinesInCSV(file_name)];
   int i = 0;
 
   printf("\n");
@@ -100,21 +116,23 @@ int btn_1()
   }
 
   fclose(archivo);
-  return 1;
+  return SUCCESS;
 }
 
 int btn_2()
 {
-  FILE *archivo = fopen("travel_database.csv", "r");
+  char file_name[] = "travel_database.csv";
+  FILE *archivo = fopen(file_name, "r");
   if (archivo == NULL)
   {
-    printf("Error al abrir el archivo.\n");
+    printf("An error was produced while trying to open the file.\n");
+    return ERROR;
   }
-
-  struct travelMenu track[100];
+  struct travelMenu track[countLinesInCSV(file_name)];
 
   int i = 0;
 
+  // save the data into the struct track variable
   while (fscanf(archivo, "%[^,],%[^,],%f,%[^,],%[^\n]\n",
                 track[i].destination,
                 track[i].date,
@@ -130,12 +148,12 @@ int btn_2()
   int option;
   char choose_edit;
   printf("Edit your Expenses\n");
-  printf("What Expense you want to change? (1, 2, 3, etc..)");
+  printf("What expense do you want to change? (1, 2, 3, etc..)");
   scanf("%d", &option);
   option -= 1; // Adjust for 0-based index
   getchar();
 
-  while (choose_edit != "f")
+  while (choose_edit != 'f')
   {
     printf("What do you want to edit?\n");
     printf("a: Destination\n");
@@ -180,7 +198,7 @@ int btn_2()
     if (archivo == NULL)
     {
       printf("Error writing to the file.\n");
-      return 1;
+      return ERROR;
     }
     printf("%d", i);
     for (int j = 0; j < i; j++)
@@ -195,7 +213,7 @@ int btn_2()
     }
     fclose(archivo);
   }
-  return 1;
+  return SUCCESS;
 }
 
 int main()
@@ -204,11 +222,6 @@ int main()
 
   do
   {
-
-    if (errors == 3)
-    {           // Check if errors have reached 3 before continuing
-      return 0; // Exit the program
-    }
 
     display_menu(); // This display the menu
 
@@ -239,7 +252,7 @@ int main()
       break;
     default:
       if (add_error())
-      { // Adds an error
+      {
         return 0;
       }
     }

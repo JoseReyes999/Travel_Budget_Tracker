@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define SUCCESS 1
 #define ERROR 0
@@ -22,11 +23,34 @@ void display_menu()
   printf("\n3: Exit\n");
 }
 
+int countLinesInCSV(const char *filename)
+{
+  FILE *file = fopen(filename, "r");
+  if (file == NULL)
+  {
+    printf("Failed to open file for counting lines.\n");
+    return ERROR;
+  }
+
+  int count = 0;
+  char ch;
+  while ((ch = fgetc(file)) != EOF)
+  {
+    if (ch == '\n')
+    {
+      count++;
+    }
+  }
+
+  fclose(file);
+  return count;
+}
+
 /*
 This function takes in two parameters, a struct travelMenu and a filename.
 What this function does is that it will append the structure into the file
 */
-void saveInCSV(struct travelMenu track, const char *filename)
+int saveInCSV(struct travelMenu track, const char *filename)
 {
   FILE *archivo = fopen(filename, "a"); // Mode 'a' to add without deleting existing content
   if (archivo == NULL)
@@ -43,6 +67,7 @@ void saveInCSV(struct travelMenu track, const char *filename)
           track.category);
 
   fclose(archivo);
+  return SUCCESS;
 }
 
 /*
@@ -62,21 +87,87 @@ int add_error()
   return ERROR;
 }
 
+int isValidString(char *str)
+{
+  if (strchr(str, ',') != NULL)
+  {
+    printf("Cannot have commas, try again.\n");
+    return 0;
+  }
+  return 1;
+}
+
+int is_valid_date(char *date)
+{
+  if (strlen(date) != 10)
+  {
+    printf("Invalid date format. Expected YYYY-MM-DD, try again\n");
+    return ERROR;
+  }
+  if (date[4] != '-' || date[7] != '-')
+  {
+    printf("Make sure you are separating your date with dashes, try again\n");
+    return ERROR;
+  }
+
+  int year, month, day;
+  sscanf(date, "%4d-%2d-%2d", &year, &month, &day); // convert the string into integers and segment into day, month and year
+
+  if (month < 1 || month > 12 || day < 1 || day > 31)
+  {
+    printf("Invalid month or day values.\n");
+    return ERROR;
+  }
+
+  return SUCCESS;
+}
+
+int isValidValue(float *value)
+{
+  if (*value <= 0)
+  {
+    printf("Value cannot be less than or equal to 0, try again\n");
+    return 0;
+  }
+  return 1;
+}
+
 int btn_0()
 {
   struct travelMenu track;
+
   printf("\nYou are Adding a New Expense\n");
-  printf("Add your destination:\n");
-  scanf(" %[^\n]", track.destination);
-  printf("Add the date (YYYY-MM-DD)\n");
-  scanf(" %[^\n]", track.date);
-  printf("Add expense:\n");
-  scanf("%f", &track.expenses);
+  do
+  {
+    printf("Add your destination:\n");
+    scanf(" %[^\n]", track.destination);
+  } while (!isValidString(track.destination));
+
+  do
+  {
+    printf("Add the date (YYYY-MM-DD):\n");
+    scanf(" %[^\n]", track.date);
+  } while (!is_valid_date(track.date));
+
+  do
+  {
+    printf("Add the amount of money you are spending:\n");
+    scanf("%f", &track.expenses);
+  } while (!isValidValue(&track.expenses));
+
   getchar(); // Clear the buffer
-  printf("Add a small description:\n");
-  scanf(" %[^\n]", track.description);
-  printf("Add the category of your expense:\n");
-  scanf(" %[^\n]", track.category);
+
+  do
+  {
+    printf("Add a small description:\n");
+    scanf(" %[^\n]", track.description);
+  } while (!isValidString(track.description));
+
+  do
+  {
+    printf("Add the category of your expense:\n");
+    scanf(" %[^\n]", track.category);
+  } while (!isValidString(track.category));
 
   saveInCSV(track, "travel_database.csv");
   return SUCCESS;
@@ -146,10 +237,16 @@ int btn_2()
   fclose(archivo);
 
   int option;
-  char choose_edit;
+  char choose_edit = '\0';
   printf("Edit your Expenses\n");
   printf("What expense do you want to change? (1, 2, 3, etc..)");
   scanf("%d", &option);
+  if (option < 1 || option > i) // Check if option is within the range of expenses
+  {
+    printf("Invalid option. Returning to the main menu...\n");
+    add_error();
+    return ERROR;
+  }
   option -= 1; // Adjust for 0-based index
   getchar();
 
@@ -168,23 +265,23 @@ int btn_2()
     {
     case 'a':
       printf("Edit destination\n");
-      scanf("%s", track[option].destination);
+      scanf(" %[^\n]", track[option].destination);
       break;
     case 'b':
       printf("Edit date\n");
-      scanf("%s", track[option].date);
+      scanf(" %[^\n]", track[option].date);
       break;
     case 'c':
       printf("Edit expenses\n");
-      scanf("%d", &track[option].expenses);
+      scanf(" %[^\n]", &track[option].expenses);
       break;
     case 'd':
       printf("Edit description\n");
-      scanf("%s", track[option].description);
+      scanf(" %[^\n]", track[option].description);
       break;
     case 'e':
       printf("Edit category\n");
-      scanf("%s", track[option].category);
+      scanf(" %[^\n]", track[option].category);
       break;
     case 'f':
       return 0;
@@ -194,16 +291,17 @@ int btn_2()
       add_error();
       break;
     }
+
     archivo = fopen("travel_database.csv", "w");
     if (archivo == NULL)
     {
       printf("Error writing to the file.\n");
       return ERROR;
     }
-    printf("%d", i);
+
+    // Write the updated data back to the file
     for (int j = 0; j < i; j++)
     {
-      printf("%d", i);
       fprintf(archivo, "%s,%s,%.2f,%s,%s\n",
               track[j].destination,
               track[j].date,
@@ -229,7 +327,7 @@ int main()
     if (scanf("%d", &option) != 1)
     {
       // This deletes or cleans the incorrect value
-      while (getchar() != "\n")
+      while (getchar() != '\n')
         ;
       printf("\nInvalid input. Please enter a numeric value.\n");
       add_error(); // This calls the function and adds an error.
@@ -257,5 +355,6 @@ int main()
       }
     }
   } while (option != 3);
+  printf("Program exited successfully.\n");
   return 0;
 }

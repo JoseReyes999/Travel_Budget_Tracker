@@ -39,7 +39,7 @@ int btn_0()
 
   do
   {
-    printf("Add the category of your expense:\n");
+    printf("Add the category of your expense(Food, Emergency, Gift, etc.):\n");
     scanf(" %[^\n]", track.category);
   } while (!isValidString(track.category));
 
@@ -96,6 +96,7 @@ int btn_2()
   struct travelMenu track[countLinesInCSV(file_name)];
 
   int i = 0;
+  printf("\n");
 
   // save the data into the struct track variable
   while (fscanf(archivo, "%[^,],%[^,],%f,%[^,],%[^\n]\n",
@@ -105,6 +106,7 @@ int btn_2()
                 track[i].description,
                 track[i].category) == 5)
   {
+    printf("%d. $%.2f for %s in %s (%s, %s)\n", i + 1, track[i].expenses, track[i].description, track[i].destination, track[i].date, track[i].category);
     i++;
   }
 
@@ -112,8 +114,8 @@ int btn_2()
 
   int option;
   char choose_edit = '\0';
-  printf("Edit your Expenses\n");
-  printf("What expense do you want to change? (1, 2, 3, etc..)");
+  printf("\nEdit your Expenses\n");
+  printf("What expense do you want to change? (1, 2, 3, etc..)\n");
   scanf("%d", &option);
   if (option < 1 || option > i) // Check if option is within the range of expenses
   {
@@ -129,7 +131,7 @@ int btn_2()
     printf("What do you want to edit?\n");
     printf("a: Destination\n");
     printf("b: Date\n");
-    printf("c: Expenses\n");
+    printf("c: Price\n");
     printf("d: Description\n");
     printf("e: category\n");
     printf("f: exit\n");
@@ -140,36 +142,41 @@ int btn_2()
     case 'a':
       do
       {
-        printf("Edit destination\n");
+        printf("Edit destination(You had: %s)\n", track[option].destination);
         scanf(" %[^\n]", track[option].destination);
+        printf("Successfully changed destination of expense number %d to %s\n", i + 1, track[option].destination);
       } while (!isValidString(track[option].destination));
       break;
     case 'b':
       do
       {
-        printf("Edit date\n");
+        printf("Edit date(You had %s)\n", track[option].date);
         scanf(" %[^\n]", track[option].date);
+        printf("Successfully changed date of expense number %d to %s\n", i + 1, track[option].date);
       } while (!is_valid_date(track[option].date));
       break;
     case 'c':
       do
       {
-        printf("Edit expenses\n");
+        printf("Edit expenses(You had $%.2f)\n", track[option].expenses);
         scanf("%f", &track[option].expenses);
+        printf("Successfully changed price of expense number %d to $%.2f\n", i + 1, track[option].expenses);
       } while (!isValidValue(&track[option].expenses));
       break;
     case 'd':
       do
       {
-        printf("Edit description\n");
+        printf("Edit description(You had %s)\n", track[option].description);
         scanf(" %[^\n]", track[option].description);
+        printf("Successfully changed description of expense number %d to %s\n", i + 1, track[option].description);
       } while (!isValidString(track[option].description));
       break;
     case 'e':
       do
       {
-        printf("Edit category\n");
+        printf("Edit category(You had %s)\n", track[option].category);
         scanf(" %[^\n]", track[option].category);
+        printf("Successfully changed category of expense number %d to %s\n", i + 1, track[option].category);
       } while (!isValidString(track[option].category));
       break;
     case 'f':

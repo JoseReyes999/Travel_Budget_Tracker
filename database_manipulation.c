@@ -98,9 +98,14 @@ int btn_1()
     }
     break;
   case 2:
-    printf("Enter the category you want to see:\n");
+  {
     char category[50];
-    scanf(" %[^\n]", category); // check format
+    do
+    {
+      printf("Enter the category you want to see:\n");
+      scanf(" %[^\n]", category);
+    } while (!isValidString(category));
+
     for (int j = 0; j < i; j++)
     {
       if (strcmp(track[j].category, category) == 0)
@@ -116,10 +121,16 @@ int btn_1()
       }
     }
     break;
+  }
   case 3:
-    printf("Enter the date you want to see:\n");
+  {
     char date[50];
-    scanf(" %[^\n]", date); // check format
+    do
+    {
+      printf("Enter the date you want to see:\n");
+      scanf(" %[^\n]", date);
+    } while (!is_valid_date(date));
+
     for (int j = 0; j < i; j++)
     {
       if (strcmp(track[j].date, date) == 0)
@@ -135,10 +146,16 @@ int btn_1()
       }
     }
     break;
+  }
   case 4:
-    printf("Enter the destination you want to see:\n");
+  {
     char destination[50];
-    scanf(" %[^\n]", destination); // check format
+    do
+    {
+      printf("Enter the destination you want to see:\n");
+      scanf(" %[^\n]", destination);
+    } while (!isValidString(destination));
+
     for (int j = 0; j < i; j++)
     {
       if (strcmp(track[j].destination, destination) == 0)
@@ -154,6 +171,7 @@ int btn_1()
       }
     }
     break;
+  }
   default:
     break;
   }

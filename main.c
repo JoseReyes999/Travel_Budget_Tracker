@@ -16,7 +16,6 @@ int main()
   {
 
     display_menu(); // This display the menu
-
     // This makes sure that option is numeric, if it is not numeric gives an error
     if (scanf("%d", &option) != 1)
     {
@@ -43,10 +42,7 @@ int main()
       printf("Exiting the program...\n");
       break;
     default:
-      if (add_error())
-      {
-        return ERROR;
-      }
+      add_error();
     }
   } while (option != 3);
   printf("Program exited successfully.\n");

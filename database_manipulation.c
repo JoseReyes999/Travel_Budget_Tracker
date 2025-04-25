@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "status.h"
 #include "travel_struct.h"
@@ -49,6 +50,7 @@ int btn_0()
 
 int btn_1()
 {
+
   char file_name[] = "travel_database.csv";
   FILE *archivo = fopen(file_name, "r"); // just read content, no editing
   if (archivo == NULL)
@@ -56,6 +58,14 @@ int btn_1()
     printf("An error was produced while trying to open the file.\n");
     return ERROR;
   }
+
+  printf("\n1. See everything\n");
+  printf("2. See by category\n");
+  printf("3. See by date\n");
+  printf("4. See by destination\n");
+
+  int option;
+  scanf("%d", &option);
 
   struct travelMenu track[countLinesInCSV(file_name)];
   int i = 0;
@@ -69,15 +79,83 @@ int btn_1()
                 track[i].description,
                 track[i].category) == 5)
   {
-    printf("Expense number %d\n", i + 1);
-    printf("Destination: %s\n", track[i].destination);
-    printf("Date: %s\n", track[i].date);
-    printf("Expenses: %.2f\n", track[i].expenses);
-    printf("Description: %s\n", track[i].description);
-    printf("Category: %s\n", track[i].category);
-
-    printf("\n");
     i++;
+  }
+
+  switch (option)
+  {
+  case 1:
+    for (int j = 0; j < i; j++)
+    {
+      printf("Expense number %d\n", j + 1);
+      printf("Destination: %s\n", track[j].destination);
+      printf("Date: %s\n", track[j].date);
+      printf("Expenses: %.2f\n", track[j].expenses);
+      printf("Description: %s\n", track[j].description);
+      printf("Category: %s\n", track[j].category);
+
+      printf("\n");
+    }
+    break;
+  case 2:
+    printf("Enter the category you want to see:\n");
+    char category[50];
+    scanf(" %[^\n]", category); // check format
+    for (int j = 0; j < i; j++)
+    {
+      if (strcmp(track[j].category, category) == 0)
+      {
+        printf("Expense number %d\n", j + 1);
+        printf("Destination: %s\n", track[j].destination);
+        printf("Date: %s\n", track[j].date);
+        printf("Expenses: %.2f\n", track[j].expenses);
+        printf("Description: %s\n", track[j].description);
+        printf("Category: %s\n", track[j].category);
+
+        printf("\n");
+      }
+    }
+    break;
+  case 3:
+    printf("Enter the date you want to see:\n");
+    char date[50];
+    scanf(" %[^\n]", date); // check format
+    for (int j = 0; j < i; j++)
+    {
+      if (strcmp(track[j].date, date) == 0)
+      {
+        printf("Expense number %d\n", j + 1);
+        printf("Destination: %s\n", track[j].destination);
+        printf("Date: %s\n", track[j].date);
+        printf("Expenses: %.2f\n", track[j].expenses);
+        printf("Description: %s\n", track[j].description);
+        printf("Category: %s\n", track[j].category);
+
+        printf("\n");
+      }
+    }
+    break;
+  case 4:
+    printf("Enter the destination you want to see:\n");
+    char destination[50];
+    scanf(" %[^\n]", destination); // check format
+    for (int j = 0; j < i; j++)
+    {
+      if (strcmp(track[j].destination, destination) == 0)
+      {
+        printf("Expense number %d\n", j + 1);
+        printf("Destination: %s\n", track[j].destination);
+        printf("Date: %s\n", track[j].date);
+        printf("Expenses: %.2f\n", track[j].expenses);
+        printf("Description: %s\n", track[j].description);
+        printf("Category: %s\n", track[j].category);
+
+        printf("\n");
+      }
+    }
+    break;
+  default:
+    break;
   }
 
   fclose(archivo);
@@ -121,6 +199,7 @@ int btn_2()
   {
     printf("Invalid option. Returning to the main menu...\n");
     add_error();
+    getchar(); // Clear the buffer
     return ERROR;
   }
   option -= 1; // Adjust for 0-based index
@@ -207,5 +286,6 @@ int btn_2()
     }
     fclose(archivo);
   }
+  getchar(); // Clear the buffer
   return SUCCESS;
 }

@@ -18,7 +18,8 @@ int add_error()
   if (errors == 3)
   {
     printf("You have made 3 errors, exiting the program...\n");
-    return SUCCESS; // Success to satisfy exiting condition in main
+    // return SUCCESS; // Success to satisfy exiting condition in main
+    exit(EXIT_FAILURE);
   }
   return ERROR;
 }

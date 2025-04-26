@@ -39,12 +39,15 @@ int main()
       btn_2();
       break;
     case 3:
+      btn_3();
+      break;
+    case 4:
       printf("Exiting the program...\n");
       break;
     default:
       add_error();
     }
-  } while (option != 3);
+  } while (option != 4);
   printf("Program exited successfully.\n");
   return 0;
 }

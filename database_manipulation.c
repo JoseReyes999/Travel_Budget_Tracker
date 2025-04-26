@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "status.h"
 #include "travel_struct.h"
@@ -305,5 +306,72 @@ int btn_2()
     fclose(archivo);
   }
   getchar(); // Clear the buffer
+  return SUCCESS;
+}
+
+int btn_3()
+{
+  char file_name[] = "travel_database.csv";
+  FILE *archivo = fopen(file_name, "r");
+  if (archivo == NULL)
+  {
+    printf("An error was produced while trying to open the file.\n");
+    return ERROR;
+  }
+  struct travelMenu track[countLinesInCSV(file_name)];
+
+  int i = 0;
+  printf("\n");
+
+  // save the data into the struct track variable
+  while (fscanf(archivo, "%[^,],%[^,],%f,%[^,],%[^\n]\n",
+                track[i].destination,
+                track[i].date,
+                &track[i].expenses,
+                track[i].description,
+                track[i].category) == 5)
+  {
+    printf("%d. $%.2f for %s in %s (%s, %s)\n", i + 1, track[i].expenses, track[i].description, track[i].destination, track[i].date, track[i].category);
+    i++;
+  }
+  fclose(archivo);
+
+  int option;
+  printf("Enter the number of the expense you want to delete:\n");
+  scanf("%d", &option);
+
+  if (option < 1 || option > i) // Check if option is within the range of expenses
+  {
+    printf("Invalid option. Returning to the main menu...\n");
+    add_error();
+    getchar(); // Clear the buffer
+    return ERROR;
+  }
+  option -= 1; // Adjust for 0-based index
+  getchar();
+
+  archivo = fopen("travel_database.csv", "w");
+  if (archivo == NULL)
+  {
+    printf("Error writing to the file.\n");
+    return ERROR;
+  }
+
+  // Write the updated data back to the file
+  for (int j = 0; j < i; j++)
+  {
+    if (j != option)
+    {
+      fprintf(archivo, "%s,%s,%.2f,%s,%s\n",
+              track[j].destination,
+              track[j].date,
+              track[j].expenses,
+              track[j].description,
+              track[j].category);
+    }
+  }
+  fclose(archivo);
+  printf("Expense number %d deleted successfully.\n", option + 1);
+
   return SUCCESS;
 }

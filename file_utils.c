@@ -8,7 +8,8 @@ void display_menu()
   printf("\n0: Add new Expense");
   printf("\n1: View Expenses");
   printf("\n2: Edit Expense");
-  printf("\n3: Exit\n");
+  printf("\n3: Delete Expense");
+  printf("\n4: Exit\n");
 }
 
 int countLinesInCSV(const char *filename)

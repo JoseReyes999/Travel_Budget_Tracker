@@ -4,5 +4,6 @@
 int btn_0();
 int btn_1();
 int btn_2();
+int btn_3();
 
 #endif

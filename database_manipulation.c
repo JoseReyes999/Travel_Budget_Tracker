@@ -242,40 +242,40 @@ int btn_2()
       {
         printf("Edit destination(You had: %s)\n", track[option].destination);
         scanf(" %[^\n]", track[option].destination);
-        printf("Successfully changed destination of expense number %d to %s\n", i + 1, track[option].destination);
       } while (!isValidString(track[option].destination));
+      printf("Successfully changed destination of expense number %d to %s\n", i + 1, track[option].destination);
       break;
     case 'b':
       do
       {
         printf("Edit date(You had %s)\n", track[option].date);
         scanf(" %[^\n]", track[option].date);
-        printf("Successfully changed date of expense number %d to %s\n", i + 1, track[option].date);
       } while (!is_valid_date(track[option].date));
+      printf("Successfully changed date of expense number %d to %s\n", i + 1, track[option].date);
       break;
     case 'c':
       do
       {
         printf("Edit expenses(You had $%.2f)\n", track[option].expenses);
         scanf("%f", &track[option].expenses);
-        printf("Successfully changed price of expense number %d to $%.2f\n", i + 1, track[option].expenses);
       } while (!isValidValue(&track[option].expenses));
+      printf("Successfully changed price of expense number %d to $%.2f\n", i + 1, track[option].expenses);
       break;
     case 'd':
       do
       {
         printf("Edit description(You had %s)\n", track[option].description);
         scanf(" %[^\n]", track[option].description);
-        printf("Successfully changed description of expense number %d to %s\n", i + 1, track[option].description);
       } while (!isValidString(track[option].description));
+      printf("Successfully changed description of expense number %d to %s\n", i + 1, track[option].description);
       break;
     case 'e':
       do
       {
         printf("Edit category(You had %s)\n", track[option].category);
         scanf(" %[^\n]", track[option].category);
-        printf("Successfully changed category of expense number %d to %s\n", i + 1, track[option].category);
       } while (!isValidString(track[option].category));
+      printf("Successfully changed category of expense number %d to %s\n", i + 1, track[option].category);
       break;
     case 'f':
       return 0;

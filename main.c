@@ -28,20 +28,20 @@ int main()
     }
 
     switch (option)
-    { // In here are the different cases optin can take.
-    case 0:
+    {       // In here are the different cases optin can take.
+    case 0: // add new expense
       btn_0();
       break;
-    case 1:
+    case 1: // view expenses by filtering
       btn_1();
       break;
-    case 2:
+    case 2: // edit expenses
       btn_2();
       break;
-    case 3:
+    case 3: // delete expenses
       btn_3();
       break;
-    case 4:
+    case 4: // exit
       printf("Exiting the program...\n");
       break;
     default:

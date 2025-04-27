@@ -12,9 +12,14 @@ void display_menu()
   printf("\n4: Exit\n");
 }
 
+/*
+This function takes in a filename and counts the number of lines in the file.
+Useful to later create arrays with the exact amount of expenses present in CSV
+*/
+
 int countLinesInCSV(const char *filename)
 {
-  FILE *file = fopen(filename, "r");
+  FILE *file = fopen(filename, "r"); // r to just read
   if (file == NULL)
   {
     printf("Failed to open file for counting lines.\n");
@@ -23,7 +28,7 @@ int countLinesInCSV(const char *filename)
 
   int count = 0;
   char ch;
-  while ((ch = fgetc(file)) != EOF)
+  while ((ch = fgetc(file)) != EOF) // Get every character until End Of File is reached
   {
     if (ch == '\n')
     {

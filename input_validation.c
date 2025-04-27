@@ -18,11 +18,14 @@ int add_error()
   if (errors == 3)
   {
     printf("You have made 3 errors, exiting the program...\n");
-    exit(EXIT_FAILURE);
+    exit(EXIT_FAILURE); // completely exits the program
   }
   return ERROR;
 }
 
+/*
+Checks if str does not conating commas to not mess up CSV format
+*/
 int isValidString(char *str)
 {
   if (strchr(str, ',') != NULL)
@@ -33,6 +36,9 @@ int isValidString(char *str)
   return SUCCESS;
 }
 
+/*
+Checks if the date is in the format YYYY-MM-DD
+*/
 int is_valid_date(char *date)
 {
   if (strlen(date) != 10)
@@ -58,6 +64,9 @@ int is_valid_date(char *date)
   return SUCCESS;
 }
 
+/*
+Checks if the value is greater than 0
+*/
 int isValidValue(float *value)
 {
   if (*value <= 0)

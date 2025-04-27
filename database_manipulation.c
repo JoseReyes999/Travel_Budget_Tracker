@@ -8,6 +8,10 @@
 #include "file_utils.h"
 #include "input_validation.h"
 
+/*
+This function will be taking charge of adding a new expense to the CSV file
+while at the same time validating the input of the user.
+*/
 int btn_0()
 {
   struct travelMenu track;
@@ -49,6 +53,10 @@ int btn_0()
   return SUCCESS;
 }
 
+/*
+This function will be taking charge of showing the user the expenses with filters like
+category, date and destination.
+*/
 int btn_1()
 {
 
@@ -109,7 +117,7 @@ int btn_1()
 
     for (int j = 0; j < i; j++)
     {
-      if (strcmp(track[j].category, category) == 0)
+      if (strcmp(track[j].category, category) == 0) // only for the ones that have that category
       {
         printf("Expense number %d\n", j + 1);
         printf("Destination: %s\n", track[j].destination);
@@ -134,7 +142,7 @@ int btn_1()
 
     for (int j = 0; j < i; j++)
     {
-      if (strcmp(track[j].date, date) == 0)
+      if (strcmp(track[j].date, date) == 0) // only for the ones that have that date
       {
         printf("Expense number %d\n", j + 1);
         printf("Destination: %s\n", track[j].destination);
@@ -159,7 +167,7 @@ int btn_1()
 
     for (int j = 0; j < i; j++)
     {
-      if (strcmp(track[j].destination, destination) == 0)
+      if (strcmp(track[j].destination, destination) == 0) // only for the ones that have that destination
       {
         printf("Expense number %d\n", j + 1);
         printf("Destination: %s\n", track[j].destination);
@@ -181,6 +189,9 @@ int btn_1()
   return SUCCESS;
 }
 
+/*
+This function will be taking charge of editing the expenses that the user has
+*/
 int btn_2()
 {
   char file_name[] = "travel_database.csv";
@@ -242,7 +253,7 @@ int btn_2()
       {
         printf("Edit destination(You had: %s)\n", track[option].destination);
         scanf(" %[^\n]", track[option].destination);
-      } while (!isValidString(track[option].destination));
+      } while (!isValidString(track[option].destination)); // Check if the destination is valid
       printf("Successfully changed destination of expense number %d to %s\n", i + 1, track[option].destination);
       break;
     case 'b':
@@ -250,7 +261,7 @@ int btn_2()
       {
         printf("Edit date(You had %s)\n", track[option].date);
         scanf(" %[^\n]", track[option].date);
-      } while (!is_valid_date(track[option].date));
+      } while (!is_valid_date(track[option].date)); // Check if the date is valid
       printf("Successfully changed date of expense number %d to %s\n", i + 1, track[option].date);
       break;
     case 'c':
@@ -258,7 +269,7 @@ int btn_2()
       {
         printf("Edit expenses(You had $%.2f)\n", track[option].expenses);
         scanf("%f", &track[option].expenses);
-      } while (!isValidValue(&track[option].expenses));
+      } while (!isValidValue(&track[option].expenses)); // Check if the expenses are valid
       printf("Successfully changed price of expense number %d to $%.2f\n", i + 1, track[option].expenses);
       break;
     case 'd':
@@ -266,7 +277,7 @@ int btn_2()
       {
         printf("Edit description(You had %s)\n", track[option].description);
         scanf(" %[^\n]", track[option].description);
-      } while (!isValidString(track[option].description));
+      } while (!isValidString(track[option].description)); // Check if the description is valid
       printf("Successfully changed description of expense number %d to %s\n", i + 1, track[option].description);
       break;
     case 'e':
@@ -274,7 +285,7 @@ int btn_2()
       {
         printf("Edit category(You had %s)\n", track[option].category);
         scanf(" %[^\n]", track[option].category);
-      } while (!isValidString(track[option].category));
+      } while (!isValidString(track[option].category)); // Check if the category is valid
       printf("Successfully changed category of expense number %d to %s\n", i + 1, track[option].category);
       break;
     case 'f':
@@ -309,6 +320,9 @@ int btn_2()
   return SUCCESS;
 }
 
+/*
+This function will be taking charge of deleting the expenses that the user chooses
+*/
 int btn_3()
 {
   char file_name[] = "travel_database.csv";
